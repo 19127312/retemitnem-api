@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 const corsOptions = {
-  origin: ["http://localhost:3001", "https://fabulous-strudel-9a0f67.netlify.app"],
+  origin: ["http://localhost:3000", "https://fabulous-strudel-9a0f67.netlify.app"],
   credentials: true,            //access-control-allow-credentials:true
   optionSuccessStatus: 200
 }
