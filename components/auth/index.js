@@ -1,0 +1,11 @@
+var express = require("express");
+var router = express.Router();
+const passport = require("../../passport/index");
+const authController = require("./authController");
+router.post("/register", authController.register);
+router.post("/login", passport.authenticate("local", { session: false }), authController.loginSuccess);
+router.post("/refresh-token", authController.createNewRefreshToken);
+router.post("/access-token", authController.createNewAccessToken);
+router.post("/logout", authController.logout);
+router.post("/logout-all", authController.logoutAll);
+module.exports = router;
