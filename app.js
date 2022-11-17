@@ -7,6 +7,7 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const authRouter = require('./components/auth');
 const userRouter = require('./components/user');
+const groupRouter = require('./components/group')
 const app = express();
 const dotenv = require('dotenv').config()
 // view engine setup
@@ -19,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://retemitnem.vercel.app"],
+  origin: ["http://localhost:3001", "https://retemitnem.vercel.app"],
   credentials: true,            //access-control-allow-credentials:true
   optionSuccessStatus: 200
 }
@@ -28,6 +29,8 @@ app.use('/', indexRouter);
 
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
+app.use('/group', groupRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
