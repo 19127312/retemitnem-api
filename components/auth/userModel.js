@@ -3,6 +3,7 @@ const userSchema = new mongoose.Schema({
     fullName: String,
     password: String,
     email: String,
+    isVerified: { type: Boolean, default: false },
 });
 
 
