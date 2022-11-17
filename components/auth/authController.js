@@ -163,3 +163,57 @@ exports.logoutAll = (async (req, res) => {
         res.status(400).json({ error: error.message ?? "Unknow Error" });
     }
 })
+
+exports.googleLogin = (async (req, res) => {
+    const { token } = req.body;
+    try {
+        const userInfo = await authService.getGoogleUserInfo(token);
+        console.log(userInfo);
+        const checkingUserEmail = await authService.findByEmail(userInfo.email);
+        // Chưa có tài khoản trong databse
+        if (!checkingUserEmail) {
+            const userDoc = userModel({
+                email: userInfo.email,
+                password: "PasswordWithGoogle",
+                fullName: userInfo.name,
+            });
+            const refreshTokenDoc = refreshTokenModel({
+                owner: userDoc.id
+            });
+            await userDoc.save();
+            await refreshTokenDoc.save();
+        }
+        // Đã có tài khoản trong database
+
+    } catch (error) {
+        res.status(400).json({ error: error.message ?? "Unknow Error" });
+    }
+
+
+
+    const refreshToken = authService.createRefreshToken({
+        email,
+        _id: userDoc._id,
+        fullName
+    }, refreshTokenDoc.id);
+    const accessToken = authService.createAccessToken({
+        email,
+        _id: userDoc._id,
+        fullName
+    });
+
+    res.json({
+        user: {
+            email,
+            fullName,
+            _id: userDoc._id
+        },
+        refreshToken,
+        accessToken,
+    })
+
+})
+
+exports.googleRegister = (async (req, res) => {
+
+})

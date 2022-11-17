@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const userModel = require("./userModel");
 const jwt = require("jsonwebtoken");
 const refreshTokenModel = require("./refreshTokenModel");
-
+const axios = require("axios");
 exports.validPassword = (password, user) => {
     return bcrypt.compare(password, user.password);
 };
@@ -17,7 +17,6 @@ exports.findByUsername = (fullName) => {
 
 exports.findByEmail = (email) => {
     return userModel.findOne({ email }).lean();
-
 };
 
 
@@ -61,3 +60,12 @@ exports.validateRefreshToken = async (token) => {
         throw new Error("Token is not in databse");
     }
 };
+
+exports.getGoogleUserInfo = async (token) => {
+    const response = await axios.get("https://www.googleapis.com/oauth2/v2/userinfo", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return response.data;
+}

@@ -8,4 +8,7 @@ router.post("/refresh-token", authController.createNewRefreshToken);
 router.post("/access-token", authController.createNewAccessToken);
 router.post("/logout", authController.logout);
 router.post("/logout-all", authController.logoutAll);
+router.post("/google_login", authController.googleLogin);
+router.post("/google_register", authController.googleRegister);
+
 module.exports = router;
