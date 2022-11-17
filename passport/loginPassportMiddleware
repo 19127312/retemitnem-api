@@ -1,0 +1,16 @@
+const passport = require("./index");
+
+module.exports = function loginPassportMiddleware(req, res, next) {
+    passport.authenticate("local", { session: false }, (err, user, info) => {
+        console.log(err, user, info);
+        if (info) {
+            return res.status(403).json({ message: info.message });
+        }
+        if (err) {
+            return res.status(401).json({ error: error.message ?? "Unknow Error" });
+        }
+        req.user = user;
+        next();
+    })(req, res, next);
+
+}
