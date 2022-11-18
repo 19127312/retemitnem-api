@@ -3,6 +3,8 @@ const userModel = require("./userModel");
 const jwt = require("jsonwebtoken");
 const refreshTokenModel = require("./refreshTokenModel");
 const axios = require("axios");
+const verifyToken = require("./verifyTokenModel");
+
 exports.validPassword = (password, user) => {
     return bcrypt.compare(password, user.password);
 };
@@ -19,7 +21,15 @@ exports.findByEmail = (email) => {
     return userModel.findOne({ email }).lean();
 };
 
+exports.findToken = (token) => {
+    return verifyToken.findOne({ token }).lean();
+}
 
+exports.updateUser = (user) => {
+    userModel.findOneAndUpdate({ _id: user._id }, user, { new: true }, (err, doc) => {
+
+    })
+}
 
 exports.createAccessToken = ({ email, _id, fullName }) => {
     return jwt.sign({

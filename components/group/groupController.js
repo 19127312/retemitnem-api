@@ -4,9 +4,7 @@ const userService = require("../user/userService");
 module.exports.createGroup = async (req, res) => {
     try {
         const { groupName, creatorID } = req.body;
-        // User input validation
-        // ...
-        // User input validation in frontend
+      
 
         const existGroup = await groupService.findGroupByCreatorAndName(creatorID, groupName);
         if (!existGroup) {

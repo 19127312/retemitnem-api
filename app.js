@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 const corsOptions = {
-  origin: ["http://localhost:3001", "https://retemitnem.vercel.app"],
+  origin: ["http://localhost:3001", "https://retemitnem.vercel.app", "https://retemitnem-ouq9wse9r-19127312.vercel.app"],
   credentials: true,            //access-control-allow-credentials:true
   optionSuccessStatus: 200
 }

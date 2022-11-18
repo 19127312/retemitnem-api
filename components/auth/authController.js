@@ -1,9 +1,13 @@
 const authService = require("./authService");
 const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
 const jwt = require("jsonwebtoken");
 const userModel = require("./userModel");
 const refreshTokenModel = require("./refreshTokenModel");
 const verifyToken = require("./verifyTokenModel");
+const sgMail = require('@sendgrid/mail')
+const crypto = require('crypto');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 exports.register = async (req, res) => {
 
     const { fullName, email, password } = req.body;
@@ -17,26 +21,37 @@ exports.register = async (req, res) => {
                 password: passwordHash,
                 fullName,
             });
-            await userDoc.save();
-            const token = new verifyToken({ _userId: userDoc._id, token: crypto.randomBytes(16).toString('hex') });
-            // token.save(function (err) {
-            //     if (err) {
-            //         return res.status(500).send({ msg: err.message });
-            //     }
+            await userDoc.save(function (err) {
+                if (err) {
+                    return res.status(500).send({ msg: err.message });
+                }
+                const token = new verifyToken({ _userId: userDoc._id, token: crypto.randomBytes(16).toString('hex') });
+                token.save(function (err) {
+                    if (err) { return res.status(500).send({ msg: err.message }); }
+                    const msg = {
+                        to: email, // Change to your recipient
+                        from: 'retemitnem@gmail.com', // Change to your verified sender
+                        subject: 'Account Verification Link',
+                        text: 'Hello',
+                        html: '<strong>Hello ' + fullName + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/auth/confirmation\/' + email + '\/' + token.token + '\n\nThank You!\n</strong>',
+                    }
 
-            //     // Send email (use credintials of SendGrid)
-            //     var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-            //     var mailOptions = { from: 'no-reply@example.com', to: user.email, subject: 'Account Verification Link', text: 'Hello ' + req.body.name + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
-            //     transporter.sendMail(mailOptions, function (err) {
-            //         if (err) {
-            //             return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
-            //         }
-            //         return res.status(200).send('A verification email has been sent to ' + user.email + '. It will be expire after one day. If you not get verification Email click on resend token.');
-            //     });
-            // });
-            res.status(200).json({
-                message: "Account created. Please activate your account in email to continue"
-            })
+                    sgMail
+                        .send(msg)
+                        .then(() => {
+                            return res.status(200).json({
+                                message: "Account created. Please activate your account in email to continue"
+                            })
+                        })
+                        .catch((error) => {
+                            console.error(error)
+                            return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
+                        })
+
+                })
+            });
+
+
 
         }
         else {
@@ -49,6 +64,26 @@ exports.register = async (req, res) => {
 
 };
 
+exports.confirmation = async (req, res) => {
+    const { email, token } = req.params;
+    const confirmToken = await authService.findToken(token)
+    if (!confirmToken) {
+        return res.status(400).json({ error: "Invalid Token" });
+    } else {
+        const user = await authService.findByEmail(email);
+        if (!user) {
+            return res.status(400).json({ error: "Invalid Email" });
+        } else {
+            if (user.isVerified) {
+                return res.status(400).json({ error: "User already verified" });
+            } else {
+                user.isVerified = true;
+                authService.updateUser(user);
+                return res.status(200).json({ message: "User verified successfully" });
+            }
+        }
+    }
+}
 exports.loginSuccess = async (req, res) => {
     const { email, _id, fullName } = req.user;
 
