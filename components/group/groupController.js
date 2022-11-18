@@ -2,7 +2,7 @@ const groupService = require('./groupService');
 
 module.exports.createGroup = async (req, res) => {
     try {
-        const { groupName,creatorID, creatorEmail } = req.body;
+        const { groupName, creatorID, creatorEmail } = req.body;
         // User input validation
         // ...
         // User input validation in frontend
@@ -24,7 +24,6 @@ module.exports.viewListOfGroups = async (req, res) => {
     try {
         const list = await groupService.findAll();
         if (list) {
-            console.log(list);
             res.status(200).json(list);
         }
 
