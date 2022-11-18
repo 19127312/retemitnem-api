@@ -8,7 +8,7 @@ exports.findGroupByCreatorAndName = (creatorID, groupName) => {
     return Group.findOne({creatorID: creatorID, groupName: groupName });
 }
 
-exports.createGroup = async (groupName, creatorID, creatorEmail) => {
+exports.createGroup = async (groupName, creatorID) => {
     const newGroup = new Group();
     newGroup.groupName = groupName;
     newGroup.members = [{
@@ -18,7 +18,7 @@ exports.createGroup = async (groupName, creatorID, creatorEmail) => {
     var datetime = new Date();
     newGroup.createdDate = datetime;
     newGroup.creatorID = creatorID;
-    newGroup.creatorEmail = creatorEmail;
+    // newGroup.creatorEmail = creatorEmail;
     await newGroup.save();
 }
 
