@@ -7,7 +7,7 @@ const groupSchema = new mongoose.Schema({
     }],
     createdDate: Date,
     creatorID: String,
-    creatorEmail: String,
+    // creatorEmail: String,
     
 });
 
