@@ -5,14 +5,14 @@ const Group = require('./groupModel');
 // }
 
 exports.findGroupByCreatorAndName = (creatorID, groupName) => {
-    return Group.findOne({creatorID: creatorID, groupName: groupName });
+    return Group.findOne({ creatorID: creatorID, groupName: groupName });
 }
 
 exports.createGroup = async (groupName, creatorID) => {
     const newGroup = new Group();
     newGroup.groupName = groupName;
     newGroup.members = [{
-        memberID : creatorID,
+        memberID: creatorID,
         role: "owner",
     }];
     var datetime = new Date();
@@ -24,4 +24,24 @@ exports.createGroup = async (groupName, creatorID) => {
 
 exports.findAll = async () => {
     return Group.find({});
+}
+
+exports.findGroupInfo = (id) => {
+    return Group.findById({ _id: id }).lean();
+}
+
+exports.updateGroup = (group) => {
+    Group.findOneAndUpdate(
+        { _id: group._id },
+        group,
+        {
+            new: true
+        },
+        (err, doc) => {
+            if (err) {
+                console.log(err);
+            }
+        }
+    );
+    
 }

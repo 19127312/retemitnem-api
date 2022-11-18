@@ -4,7 +4,7 @@ const userService = require("../user/userService");
 module.exports.createGroup = async (req, res) => {
     try {
         const { groupName, creatorID } = req.body;
-      
+
 
         const existGroup = await groupService.findGroupByCreatorAndName(creatorID, groupName);
         if (!existGroup) {
@@ -23,34 +23,25 @@ module.exports.viewListOfGroups = async (req, res) => {
     try {
         let list = await groupService.findAll();
         if (list) {
-            for(let i =0; i < list.length; i++){
+            let newList = JSON.parse(JSON.stringify(list));
+
+            for (let i = 0; i < newList.length; i++) {
+                // copy members into new array
                 let newMemberList = list[i].members.map(item => {
-                    return{
+                    return {
                         _id: item._id,
-                        memberID : item.memberID,
-                        role : item.role
+                        memberID: item.memberID,
+                        role: item.role
                     }
                 })
                 for (let j = 0; j < newMemberList.length; j++) {
                     const memberInfo = await userService.findUserInfo(newMemberList[j].memberID);
-                    newMemberList[j] = {...newMemberList[i], memberName: memberInfo.fullName, memberEmail: memberInfo.email }
+                    newMemberList[j] = { ...newMemberList[j], memberName: memberInfo.fullName, memberEmail: memberInfo.email }
+                    console.log("list", newMemberList[j]);
+                    newList[i].members[j] = newMemberList[j];
+
                 }
             }
-
-            console.log("list", list.members);
-
-            
-
-            let newList = list.map(item => {
-                return {
-                    _id: item._id,
-                    members: item.members,
-                    createdDate: item.createdDate,
-                    creatorID: item.creatorID,
-                    groupName: item.groupName
-                }
-            })
-
 
             for (let i = 0; i < newList.length; i++) {
                 const userInfo = await userService.findUserInfo(newList[i].creatorID);
@@ -58,6 +49,74 @@ module.exports.viewListOfGroups = async (req, res) => {
             }
             res.status(200).json(newList);
         }
+
+    } catch (e) {
+        res.status(400).json({ errorMessage: e.message ?? 'Unknown error' });
+    }
+}
+
+module.exports.changeRole = async (req, res) => {
+    try {
+        const { groupID, memberID, role } = req.body;
+        const groupInfo = await groupService.findGroupInfo(groupID);
+
+        let newGroupInfo = JSON.parse(JSON.stringify(groupInfo));
+        for (let i = 0; i < newGroupInfo.members.length; i++) {
+            if (newGroupInfo.members[i].memberID === memberID) {
+                newGroupInfo.members[i].role = role;
+                break;
+            }
+        }
+        groupService.updateGroup(newGroupInfo);
+        res.status(200).json(newGroupInfo);
+
+    } catch (e) {
+        res.status(400).json({ errorMessage: e.message ?? 'Unknown error' });
+    }
+}
+
+module.exports.kickMember = async (req, res) => {
+    try {
+        const { groupID, memberID } = req.body;
+        const groupInfo = await groupService.findGroupInfo(groupID);
+
+        let newGroupInfo = JSON.parse(JSON.stringify(groupInfo));
+        for (let i = 0; i < newGroupInfo.members.length; i++) {
+            if (newGroupInfo.members[i].memberID === memberID) {
+                newGroupInfo.members.splice(i, i + 1);
+                break;
+            }
+        }
+        groupService.updateGroup(newGroupInfo);
+        res.status(200).json(newGroupInfo);
+
+    } catch (e) {
+        res.status(400).json({ errorMessage: e.message ?? 'Unknown error' });
+    }
+}
+
+module.exports.addMember = async (req, res) => {
+    try {
+        const { groupID, memberID } = req.body;
+        const groupInfo = await groupService.findGroupInfo(groupID);
+
+        let newGroupInfo = JSON.parse(JSON.stringify(groupInfo));
+        let newMember = {
+            memberID: memberID,
+            role: "member"
+        }
+
+        for (let i = 0; i < newGroupInfo.members.length; i++) {
+            if (newGroupInfo.members[i].memberID === memberID) {
+                res.status(409).send('this member has already been in group');
+                return;
+            }
+        }
+
+        newGroupInfo.members.push(newMember);
+
+        groupService.updateGroup(newGroupInfo);
+        res.status(200).json(newGroupInfo);
 
     } catch (e) {
         res.status(400).json({ errorMessage: e.message ?? 'Unknown error' });
