@@ -10,6 +10,6 @@ router.post("/access-token", authController.createNewAccessToken);
 router.post("/logout", authController.logout);
 router.post("/logout-all", authController.logoutAll);
 router.post("/google_login", authController.googleLogin);
-router.post("/google_register", authController.googleRegister);
+router.post("/google_signup", authController.googleRegister);
 router.get("/confirmation/:email/:token", authController.confirmation);
 module.exports = router;
