@@ -44,7 +44,6 @@ module.exports.viewListOfGroups = async (req, res) => {
             memberName: memberInfo.fullName,
             memberEmail: memberInfo.email,
           };
-          console.log("list", newMemberList[j]);
           newList[i].members[j] = newMemberList[j];
         }
       }
@@ -98,7 +97,6 @@ module.exports.viewGroupInfo = async (req, res) => {
         creatorName: userInfo.fullName,
         creatorEmail: userInfo.email,
       };
-
       res.status(200).json(newList);
     }
   } catch (e) {
