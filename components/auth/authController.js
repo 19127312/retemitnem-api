@@ -220,7 +220,6 @@ exports.googleLogin = async (req, res) => {
   try {
     const userInfo = await authService.getGoogleUserInfo(token);
     const checkingUserEmail = await authService.findByEmail(userInfo.email);
-    console.log(checkingUserEmail);
     let idUser = null;
     // Chưa có tài khoản trong databse
     if (!checkingUserEmail) {
@@ -259,50 +258,6 @@ exports.googleLogin = async (req, res) => {
         email: userInfo.email,
         fullName: userInfo.name,
         _id: idUser,
-      },
-      refreshToken,
-      accessToken,
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message ?? "Unknow Error" });
-  }
-};
-
-exports.googleRegister = async (req, res) => {
-  const { token } = req.body;
-  try {
-    const userInfo = await authService.getGoogleUserInfo(token);
-    // Chưa có tài khoản trong databse
-    const userDoc = userModel({
-      email: userInfo.email,
-      fullName: userInfo.name,
-      isVerified: true,
-    });
-    await userDoc.save();
-
-    const refreshTokenDoc = refreshTokenModel({
-      owner: userDoc._id,
-    });
-    await refreshTokenDoc.save();
-
-    const refreshToken = authService.createRefreshToken(
-      {
-        email: userInfo.email,
-        fullName: userInfo.name,
-        _id: userDoc._id,
-      },
-      refreshTokenDoc.id
-    );
-    const accessToken = authService.createAccessToken({
-      email: userInfo.email,
-      fullName: userInfo.name,
-      _id: userDoc._id,
-    });
-    res.status(200).json({
-      user: {
-        email: userInfo.email,
-        fullName: userInfo.name,
-        _id: userDoc._id,
       },
       refreshToken,
       accessToken,
