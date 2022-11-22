@@ -1,5 +1,7 @@
 const groupService = require("./groupService");
 const userService = require("../user/userService");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 module.exports.createGroup = async (req, res) => {
   try {
@@ -226,12 +228,47 @@ module.exports.addMember = async (req, res) => {
         return;
       }
     }
-
     newGroupInfo.members.push(newMember);
-
     groupService.updateGroup(newGroupInfo);
     res.status(200).json(newGroupInfo);
   } catch (e) {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
+
+module.exports.sendLinkToEmail = async (req, res) => {
+  try {
+    const { groupID, emailList } = req.body;
+    const host = req.headers.origin;
+    const msg = {
+      to: emailList, // Change to your recipient
+      from: "retemitnem@gmail.com", // Change to your verified sender
+      subject: "Account Verification Link",
+      text: "Hello",
+      html:
+        "<strong>Click this link to join group: " +
+        "\n" +
+        host +
+        "/joinlink/" +
+        groupID +
+        "</strong>",
+    };
+
+    sgMail
+      .sendMultiple(msg)
+      .then(() => {
+        return res.status(200).json({
+          message: "Send link successfully.",
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        return res.status(500).send({
+          msg: "Technical Issue!, Please check your Email.",
+        });
+      });
+  } catch (e) {
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
+

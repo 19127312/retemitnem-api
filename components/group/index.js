@@ -1,12 +1,14 @@
-var express = require('express');
+var express = require("express");
 const router = express.Router();
-const groupController = require('./groupController');
+const groupController = require("./groupController");
 const jwtMiddleware = require("../../passport/jwtMiddleware");
 
-router.post('/add', jwtMiddleware, groupController.createGroup);
-router.get("/info", groupController.viewListOfGroups);
-router.post("/role",  groupController.changeRole);
-router.post("/deletemember",  groupController.kickMember);
-router.post("/addmember", jwtMiddleware, groupController.addMember);
+router.post("/add", jwtMiddleware, groupController.createGroup);
+router.get("/info", jwtMiddleware, groupController.viewListOfGroups);
+router.post("/role", groupController.changeRole);
+router.post("/deletemember", groupController.kickMember);
+router.post("/addmember", groupController.addMember);
+router.post("/sendlinktoemail", groupController.sendLinkToEmail);
 router.get("/detail/:groupID", groupController.viewGroupInfo);
 module.exports = router;
+
