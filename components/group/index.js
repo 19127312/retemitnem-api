@@ -9,4 +9,6 @@ router.post("/role", groupController.changeRole);
 router.post("/deletemember", groupController.kickMember);
 router.post("/addmember", groupController.addMember);
 router.post("/sendlinktoemail", groupController.sendLinkToEmail);
+router.get("/detail/:groupID", groupController.viewGroupInfo);
 module.exports = router;
+
