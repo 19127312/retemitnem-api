@@ -230,7 +230,38 @@ module.exports.addMember = async (req, res) => {
     }
     newGroupInfo.members.push(newMember);
     groupService.updateGroup(newGroupInfo);
-    res.status(200).json(newGroupInfo);
+    // insert more fields
+
+    let newList = JSON.parse(JSON.stringify(newGroupInfo));
+    // copy members into new array
+    let newMemberList = newGroupInfo.members.map((item) => {
+      return {
+        _id: item._id,
+        memberID: item.memberID,
+        role: item.role,
+      };
+    });
+
+    for (let j = 0; j < newMemberList.length; j++) {
+      const memberInfo = await userService.findUserInfo(
+        newMemberList[j].memberID
+      );
+      newMemberList[j] = {
+        ...newMemberList[j],
+        memberName: memberInfo.fullName,
+        memberEmail: memberInfo.email,
+      };
+      newList.members[j] = newMemberList[j];
+    }
+
+    const userInfo = await userService.findUserInfo(newList.creatorID);
+    newList = {
+      ...newList,
+      creatorName: userInfo.fullName,
+      creatorEmail: userInfo.email,
+    };
+    res.status(200).json(newList);
+    // res.status(200).json(newGroupInfo);
   } catch (e) {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
@@ -271,4 +302,3 @@ module.exports.sendLinkToEmail = async (req, res) => {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
-
