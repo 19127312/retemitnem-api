@@ -90,7 +90,7 @@ exports.confirmation = async (req, res) => {
         user.isVerified = true;
         await authService.updateUser(user);
         await authService.deleteToken(token);
-        return res.status(200).json({ message: "User verified successfully" });
+        return res.redirect("https://retemitnem.vercel.app");
       }
     }
   }
