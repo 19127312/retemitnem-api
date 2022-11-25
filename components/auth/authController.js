@@ -226,6 +226,7 @@ exports.googleLogin = async (req, res) => {
     const userInfo = await authService.getGoogleUserInfo(token);
     const checkingUserEmail = await authService.findByEmail(userInfo.email);
     let idUser = null;
+    let fullNameUser = null;
     // Chưa có tài khoản trong databse
     if (!checkingUserEmail) {
       const userDoc = userModel({
@@ -235,9 +236,11 @@ exports.googleLogin = async (req, res) => {
       });
       await userDoc.save();
       idUser = userDoc._id;
+      fullNameUser = userDoc.fullName;
     } else {
       //Đã có tài khoản trong database
       idUser = checkingUserEmail._id;
+      fullNameUser = checkingUserEmail.fullName;
     }
     const refreshTokenDoc = refreshTokenModel({
       owner: idUser,
@@ -248,20 +251,20 @@ exports.googleLogin = async (req, res) => {
     const refreshToken = authService.createRefreshToken(
       {
         email: userInfo.email,
-        fullName: userInfo.name,
+        fullName: fullNameUser,
         _id: idUser,
       },
       refreshTokenDoc.id
     );
     const accessToken = authService.createAccessToken({
       email: userInfo.email,
-      fullName: userInfo.name,
+      fullName: fullNameUser,
       _id: idUser,
     });
     res.json({
       user: {
         email: userInfo.email,
-        fullName: userInfo.name,
+        fullName: fullNameUser,
         _id: idUser,
       },
       refreshToken,
