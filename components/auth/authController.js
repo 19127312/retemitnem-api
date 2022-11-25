@@ -75,6 +75,8 @@ exports.register = async (req, res) => {
 };
 
 exports.confirmation = async (req, res) => {
+  const host = req.headers.origin;
+  console.log(req.get("host"));
   const { email, token } = req.params;
   const confirmToken = await authService.findToken(token);
   if (!confirmToken) {
@@ -90,7 +92,12 @@ exports.confirmation = async (req, res) => {
         user.isVerified = true;
         await authService.updateUser(user);
         await authService.deleteToken(token);
-        return res.redirect("https://retemitnem.vercel.app");
+        console.log(host);
+        if (host === "http://localhost:3001") {
+          return res.redirect("http://localhost:3001");
+        } else {
+          return res.redirect("https://retemitnem.vercel.app");
+        }
       }
     }
   }
