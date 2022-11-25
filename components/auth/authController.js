@@ -75,9 +75,8 @@ exports.register = async (req, res) => {
 };
 
 exports.confirmation = async (req, res) => {
-  const host = req.headers.origin;
-  console.log(req.get("host"));
   const { email, token } = req.params;
+  console.log(req.get("host"));
   const confirmToken = await authService.findToken(token);
   if (!confirmToken) {
     return res.status(400).json({ error: "Invalid Token" });
@@ -92,8 +91,7 @@ exports.confirmation = async (req, res) => {
         user.isVerified = true;
         await authService.updateUser(user);
         await authService.deleteToken(token);
-        console.log(host);
-        if (host === "http://localhost:3001") {
+        if (req.get("host") === "localhost:3000") {
           return res.redirect("http://localhost:3001");
         } else {
           return res.redirect("https://retemitnem.vercel.app");

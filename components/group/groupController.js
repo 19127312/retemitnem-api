@@ -61,6 +61,7 @@ module.exports.viewListOfGroups = async (req, res) => {
       res.status(200).json(newList);
     }
   } catch (e) {
+    console.log(e);
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
