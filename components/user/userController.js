@@ -24,15 +24,17 @@ module.exports.changeName = async (req, res) => {
 };
 
 module.exports.changePassword = async (req, res) => {
+  const { userID, oldPassword, newPassword } = req.body;
+  const userInfo = await userService.findUserInfo(userID);
+  // check oldPassword
+  const isValid = await authService.validPassword(oldPassword, userInfo);
+
   try {
-    const { userID, oldPassword, newPassword } = req.body;
-    const userInfo = await userService.findUserInfo(userID);
-    // check oldPassword
-    const isValid = await authService.validPassword(oldPassword, userInfo);
     if (isValid) {
       // update password
       let newUserInfo = JSON.parse(JSON.stringify(userInfo));
       const passwordHash = await bcrypt.hash(newPassword, 10);
+      console.log(passwordHash);
       newUserInfo.password = passwordHash;
       userService.updateUser(newUserInfo);
       res.status(200).json({
@@ -44,6 +46,22 @@ module.exports.changePassword = async (req, res) => {
       res.status(409).json({ errorMessage: "incorrect password" });
     }
   } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
+
+module.exports.checkType = async (req, res) => {
+  const { userID } = req.body;
+  const userInfo = await userService.findUserInfo(userID);
+  try {
+    if (userInfo.password == null) {
+      res.status(200).json({ type: "google" });
+    } else {
+      res.status(200).json({ type: "local" });
+    }
+  } catch (e) {
+    console.log(e);
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };

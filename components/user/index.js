@@ -6,4 +6,5 @@ const jwtMiddleware = require("../../passport/jwtMiddleware");
 router.get("/profile", jwtMiddleware, userController.getProfile);
 router.post("/changename", jwtMiddleware, userController.changeName);
 router.post("/changepassword", jwtMiddleware, userController.changePassword);
+router.post("/checkType", jwtMiddleware, userController.checkType);
 module.exports = router;
