@@ -166,9 +166,10 @@ module.exports.kickMember = async (req, res) => {
     const groupInfo = await groupService.findGroupInfo(groupID);
 
     let newGroupInfo = JSON.parse(JSON.stringify(groupInfo));
-    for (let i = 0; i < newGroupInfo.members.length; i++) {
+    const length = newGroupInfo.members.length;
+    for (let i = 0; i < length; i++) {
       if (newGroupInfo.members[i].memberID === memberID) {
-        newGroupInfo.members.splice(i, i + 1);
+        newGroupInfo.members.splice(i, 1);
         break;
       }
     }
