@@ -8,6 +8,7 @@ const indexRouter = require("./routes/index");
 const authRouter = require("./components/auth");
 const userRouter = require("./components/user");
 const groupRouter = require("./components/group");
+const presentationRouter = require("./components/presentation");
 const app = express();
 const dotenv = require("dotenv").config();
 // view engine setup
@@ -34,6 +35,7 @@ app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/group", groupRouter);
+app.use("/presentation", presentationRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
