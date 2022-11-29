@@ -7,4 +7,5 @@ router.post("/add", presentationController.createPresentation);
 router.post("/update", presentationController.updatePresentation);
 router.get("/viewByGroupID/:groupID", presentationController.viewListOfPresentationsByGroupID);
 router.get("/info/:id", presentationController.viewPresentationInfo);
+router.post("/delete", presentationController.deletePresentations);
 module.exports = router;
