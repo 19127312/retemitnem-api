@@ -1,4 +1,5 @@
 const presentationService = require("./presentationService");
+const userService = require("../user/userService");
 
 module.exports.createPresentation = async (req, res) => {
   try {
@@ -11,21 +12,30 @@ module.exports.createPresentation = async (req, res) => {
 };
 
 module.exports.updatePresentation = async (req, res) => {
-    try {
-        const presentation = req.body;
-        presentationService.updatePresentation(presentation);
-        res.status(200).json(presentation);
-    } catch (e) {
-      res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
-    }
-}
+  try {
+    const presentation = req.body;
+    presentationService.updatePresentation(presentation);
+    res.status(200).json(presentation);
+  } catch (e) {
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
 
 module.exports.viewListOfPresentationsByGroupID = async (req, res) => {
   try {
-    const {groupID} = req.params;
+    const { groupID } = req.params;
     let list = await presentationService.findByGroupID(groupID);
     if (list) {
-      res.status(200).json(list);
+      let newList = JSON.parse(JSON.stringify(list));
+      for (let i = 0; i < newList.length; i++) {
+        const ownerInfo = await userService.findUserInfo(newList[i].ownerID);
+        newList[i] = {
+          ...newList[i],
+          ownerName: ownerInfo.fullName,
+        };
+      }
+
+      res.status(200).json(newList);
     }
   } catch (e) {
     console.log(e);
