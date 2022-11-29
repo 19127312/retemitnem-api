@@ -4,8 +4,14 @@ const userService = require("../user/userService");
 module.exports.createPresentation = async (req, res) => {
   try {
     const { title, ownerID, groupID } = req.body;
-    await presentationService.createPresentation(title, ownerID, groupID);
-    res.status(200).send("success");
+    const existPresentation =
+      await presentationService.findPresentationByOwnerAndName(ownerID, title);
+    if (!existPresentation) {
+      await presentationService.createPresentation(title, ownerID, groupID);
+      res.status(200).send("success");
+    } else {
+      res.status(409).send("presentation name has already been used");
+    }
   } catch (e) {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
@@ -13,7 +19,7 @@ module.exports.createPresentation = async (req, res) => {
 
 module.exports.updatePresentation = async (req, res) => {
   try {
-    const presentation = req.body;
+    const {presentation} = req.body;
     presentationService.updatePresentation(presentation);
     res.status(200).json(presentation);
   } catch (e) {
@@ -50,6 +56,19 @@ module.exports.viewPresentationInfo = async (req, res) => {
     if (list) {
       res.status(200).json(list);
     }
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
+
+module.exports.deletePresentations = async (req, res) => {
+  try {
+    const { presentationIDs } = req.body;
+    for (let i = 0; i < presentationIDs.length; i++) {
+        presentationService.findPresentationAndDelete(presentationIDs[i]);
+    }
+    res.status(200).send("success");
   } catch (e) {
     console.log(e);
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });

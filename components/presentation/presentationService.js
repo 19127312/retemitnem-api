@@ -52,3 +52,17 @@ exports.findByGroupID = async (groupID) => {
 exports.findPresentationInfo = (id) => {
   return Presentation.findById({ _id: id }).lean();
 };
+
+exports.findPresentationByOwnerAndName = (ownerID, title) => {
+  return Presentation.findOne({ ownerID: ownerID, title: title });
+};
+
+exports.findPresentationAndDelete = (id) => {
+    Presentation.findByIdAndDelete(id, function (err, docs) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Deleted : ", docs);
+      }
+    });
+};
