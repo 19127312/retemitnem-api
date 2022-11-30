@@ -24,6 +24,7 @@ const presentationSchema = new mongoose.Schema({
   ownerID: String,
   groupID: String,
   currentSlide: Number,
+  playSlide: Number,
 });
 
 module.exports = mongoose.model("Presentation", presentationSchema);

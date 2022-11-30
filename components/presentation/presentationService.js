@@ -27,6 +27,8 @@ exports.createPresentation = async (title, ownerID, groupID) => {
   newPresentation.ownerID = ownerID;
   newPresentation.groupID = groupID;
   newPresentation.currentSlide = 0;
+  newPresentation.playSlide = 0;
+
   await newPresentation.save();
 };
 
@@ -46,7 +48,7 @@ exports.updatePresentation = (presentation) => {
 };
 
 exports.findByGroupID = async (groupID) => {
-  return Presentation.find({ groupID : groupID});
+  return Presentation.find({ groupID: groupID });
 };
 
 exports.findPresentationInfo = (id) => {
@@ -58,11 +60,11 @@ exports.findPresentationByOwnerAndName = (ownerID, title) => {
 };
 
 exports.findPresentationAndDelete = (id) => {
-    Presentation.findByIdAndDelete(id, function (err, docs) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Deleted : ", docs);
-      }
-    });
+  Presentation.findByIdAndDelete(id, function (err, docs) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Deleted : ", docs);
+    }
+  });
 };
