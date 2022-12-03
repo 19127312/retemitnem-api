@@ -76,7 +76,6 @@ exports.register = async (req, res) => {
 
 exports.confirmation = async (req, res) => {
   const { email, token } = req.params;
-  console.log(req.get("host"));
   const confirmToken = await authService.findToken(token);
   if (!confirmToken) {
     return res.status(400).json({ error: "Invalid Token" });

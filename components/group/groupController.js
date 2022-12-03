@@ -68,7 +68,6 @@ module.exports.viewListOfGroups = async (req, res) => {
 
 module.exports.viewGroupInfo = async (req, res) => {
   try {
-    console.log(req.params);
     const { groupID } = req.params;
 
     let list = await groupService.findGroupInfo(groupID);
