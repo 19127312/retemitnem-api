@@ -2,7 +2,6 @@ const passport = require("./index");
 
 module.exports = function loginPassportMiddleware(req, res, next) {
   passport.authenticate("local", { session: false }, (err, user, info) => {
-    console.log(err, user, info);
     if (info) {
       return res.status(401).json({ message: info.message });
     }

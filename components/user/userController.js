@@ -34,7 +34,6 @@ module.exports.changePassword = async (req, res) => {
       // update password
       let newUserInfo = JSON.parse(JSON.stringify(userInfo));
       const passwordHash = await bcrypt.hash(newPassword, 10);
-      console.log(passwordHash);
       newUserInfo.password = passwordHash;
       userService.updateUser(newUserInfo);
       res.status(200).json({
