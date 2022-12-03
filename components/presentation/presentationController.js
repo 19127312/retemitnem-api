@@ -19,7 +19,7 @@ module.exports.createPresentation = async (req, res) => {
 
 module.exports.updatePresentation = async (req, res) => {
   try {
-    const {presentation} = req.body;
+    const { presentation } = req.body;
     presentationService.updatePresentation(presentation);
     res.status(200).json(presentation);
   } catch (e) {
@@ -52,9 +52,11 @@ module.exports.viewListOfPresentationsByGroupID = async (req, res) => {
 module.exports.viewPresentationInfo = async (req, res) => {
   try {
     const { id } = req.params;
-    let list = await presentationService.findPresentationInfo(id);
-    if (list) {
-      res.status(200).json(list);
+    let presentation = await presentationService.findPresentationInfo(id);
+    if (presentation) {
+      res.status(200).json(presentation);
+    } else {
+      res.status(409).json({ errorMessage: "Presentation not found" });
     }
   } catch (e) {
     console.log(e);
@@ -66,7 +68,7 @@ module.exports.deletePresentations = async (req, res) => {
   try {
     const { presentationIDs } = req.body;
     for (let i = 0; i < presentationIDs.length; i++) {
-        presentationService.findPresentationAndDelete(presentationIDs[i]);
+      presentationService.findPresentationAndDelete(presentationIDs[i]);
     }
     res.status(200).send("success");
   } catch (e) {
