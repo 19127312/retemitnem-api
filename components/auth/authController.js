@@ -222,7 +222,6 @@ exports.logoutAll = async (req, res) => {
 exports.googleLogin = async (req, res) => {
   const { token } = req.body;
   try {
-    console.log(token);
     const userInfo = await authService.getGoogleUserInfo(token);
     const checkingUserEmail = await authService.findByEmail(userInfo.email);
     console.log(userInfo);
