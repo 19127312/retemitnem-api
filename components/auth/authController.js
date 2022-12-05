@@ -224,6 +224,8 @@ exports.googleLogin = async (req, res) => {
   try {
     const userInfo = await authService.getGoogleUserInfo(token);
     const checkingUserEmail = await authService.findByEmail(userInfo.email);
+    console.log(checkingUserEmail);
+    console.log(userInfo);
     let idUser = null;
     let fullNameUser = null;
     // Chưa có tài khoản trong databse
