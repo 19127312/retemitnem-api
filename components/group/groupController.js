@@ -303,3 +303,24 @@ module.exports.sendLinkToEmail = async (req, res) => {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
+
+module.exports.checkMemberInGroup = async (req, res) => {
+  try {
+    let found = false;
+    const { groupID, memberID } = req.body;
+    let group = await groupService.findGroupInfo(groupID);
+    for (let i = 0; i < group.members.length; i++) {
+      if (group.members[i].memberID === memberID) {
+        found = true;
+        break;
+      }
+    }
+    if (found) {
+      res.status(200).send("member is in group");
+    } else {
+      res.status(200).send("member is not in group");
+    }
+  } catch (e) {
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
