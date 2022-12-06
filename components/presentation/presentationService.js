@@ -28,6 +28,7 @@ exports.createPresentation = async (title, ownerID, groupID) => {
   newPresentation.groupID = groupID;
   newPresentation.currentSlide = 0;
   newPresentation.playSlide = 0;
+  newPresentation.isPrivate = true;
 
   await newPresentation.save();
 };
