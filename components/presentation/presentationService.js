@@ -1,4 +1,5 @@
 const Presentation = require("./presentationModel");
+const chatService = require("../chat/chatService");
 
 exports.createPresentation = async (title, ownerID, groupID) => {
   const newPresentation = new Presentation();
