@@ -28,19 +28,6 @@ const presentationSchema = new mongoose.Schema({
   currentSlide: Number,
   playSlide: Number,
   isPrivate: Boolean,
-  chats: [
-    {
-      content: String,
-      sentTime: Date,
-    },
-  ],
-  presentationQuestions: [
-    {
-      content: String,
-      likeCount: Number,
-      isAnswered: Boolean,
-    },
-  ],
 });
 
 module.exports = mongoose.model("Presentation", presentationSchema);
