@@ -9,7 +9,12 @@ exports.getInitChats = async (req, res) => {
 exports.createChat = async (req, res) => {
   const { presentationID, content, isSender } = req.body;
   await chatService.createChat(presentationID, content, isSender);
-  res.status(200).json({ message: "success" });
+  const chat = {
+    presentationID,
+    content,
+    isSender,
+  };
+  res.status(200).json({ chat });
 };
 exports.getMoreChats = async (req, res) => {
   const { presentationID, lastChatID } = req.body;
@@ -23,8 +28,7 @@ exports.getMoreChats = async (req, res) => {
       break;
     }
   }
-  console.log(i);
-  console.log(chats.length);
+
   if (chats.length - i > 10) {
     res.status(200).json({ chats: chats.slice(i + 1, i + 11) });
   } else {
