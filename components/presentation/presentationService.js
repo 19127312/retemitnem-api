@@ -9,6 +9,8 @@ exports.createPresentation = async (title, ownerID, groupID) => {
       questionType: "Multiple Choice",
       question: "",
       key: 0,
+      subHeading: "",
+      image: "",
       options: [
         {
           option: "",

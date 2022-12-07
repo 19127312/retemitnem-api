@@ -5,6 +5,8 @@ const presentationSchema = new mongoose.Schema({
     {
       questionType: String,
       question: String,
+      subHeading: String,
+      image: String,
       key: Number,
       options: [
         {
