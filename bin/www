@@ -48,6 +48,18 @@ monoogse
         console.log("JOIN ROOM", data);
         socket.join(data._id);
       });
+      socket.on("joinQuestionRoom", (data) => {
+        console.log("JOIN QUESTION ROOM", data);
+        socket.join(data._id);
+      });
+
+      socket.on("sentQuestion", (data) => {
+        console.log("SENT QUESTION", data);
+        socket.to(data._id).emit("onReceiveQuestion", data.data);
+      });
+      socket.on("updateQuestion", (data) => {
+        socket.to(data._id).emit("onUpdateQuestion", data.data);
+      });
 
       socket.on("sentMessage", (data) => {
         console.log(data);

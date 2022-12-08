@@ -20,3 +20,16 @@ exports.updateQuestion = async (req, res) => {
   await questionService.updateQuestion(question);
   res.status(200).json({ question });
 };
+
+module.exports.deleteQuestions = async (req, res) => {
+  try {
+    const { questionsIDs } = req.body;
+    for (let i = 0; i < questionsIDs.length; i++) {
+      questionService.findQuestionAndDelete(questionsIDs[i]);
+    }
+    res.status(200).send("success");
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
