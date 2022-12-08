@@ -29,3 +29,13 @@ exports.updateQuestion = async (question) => {
     }
   );
 };
+
+exports.findQuestionAndDelete = (id) => {
+  Question.findByIdAndDelete(id, function (err, docs) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Deleted : ", docs);
+    }
+  });
+};
