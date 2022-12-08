@@ -9,6 +9,7 @@ const authRouter = require("./components/auth");
 const userRouter = require("./components/user");
 const groupRouter = require("./components/group");
 const chatRouter = require("./components/chat");
+const questionRouter = require("./components/question");
 const presentationRouter = require("./components/presentation");
 const app = express();
 // view engine setup
@@ -37,7 +38,7 @@ app.use("/user", userRouter);
 app.use("/group", groupRouter);
 app.use("/chat", chatRouter);
 app.use("/presentation", presentationRouter);
-
+app.use("/question", questionRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
