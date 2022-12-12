@@ -35,7 +35,6 @@ monoogse
     io.on("connection", function (socket) {
       console.log(`User Connected: ${socket.id}`);
       socket.on("join_presentation", (data) => {
-        console.log("Join presentation", data);
         socket.join(data);
       });
       socket.on("submit_result", (data) => {
@@ -44,17 +43,8 @@ monoogse
       socket.on("updatePresentation", (data) => {
         socket.to(data._id).emit("onUpdatePresentation", data);
       });
-      socket.on("joinRoom", (data) => {
-        console.log("JOIN ROOM", data);
-        socket.join(data._id);
-      });
-      socket.on("joinQuestionRoom", (data) => {
-        console.log("JOIN QUESTION ROOM", data);
-        socket.join(data._id);
-      });
 
       socket.on("sentQuestion", (data) => {
-        console.log("SENT QUESTION", data);
         socket.to(data._id).emit("onReceiveQuestion", data.data);
       });
       socket.on("updateQuestion", (data) => {
@@ -62,7 +52,6 @@ monoogse
       });
 
       socket.on("sentMessage", (data) => {
-        console.log(data);
         socket.to(data._id).emit("onReceiveMessage", data);
       });
       //Whenever someone disconnects this piece of code executed
