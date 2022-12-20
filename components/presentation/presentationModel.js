@@ -28,6 +28,7 @@ const presentationSchema = new mongoose.Schema({
   currentSlide: Number,
   playSlide: Number,
   isPrivate: Boolean,
+  collaborators: [String],
 });
 
 module.exports = mongoose.model("Presentation", presentationSchema);

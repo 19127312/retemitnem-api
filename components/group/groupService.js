@@ -45,3 +45,13 @@ exports.updateGroup = (group) => {
     );
     
 }
+
+exports.findGroupAndDelete = (id) => {
+  Group.findByIdAndDelete(id, function (err, docs) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Deleted : ", docs);
+    }
+  });
+};
