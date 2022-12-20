@@ -16,4 +16,5 @@ router.get(
 router.get("/info/:id", presentationController.viewPresentationInfo);
 router.post("/delete", presentationController.deletePresentations);
 router.get("/collaborator/:id", presentationController.viewCollaborator);
+router.post("/setPlayingInGroup", presentationController.setPlayingInGroup);
 module.exports = router;

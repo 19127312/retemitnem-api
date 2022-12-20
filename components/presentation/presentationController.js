@@ -126,3 +126,31 @@ module.exports.viewCollaborator = async (req, res) => {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
+
+module.exports.setPlayingInGroup = async (req, res) => {
+  try {
+    const { presentationID, groupID } = req.body;
+    // let list = await presentationService.findByGroupID(groupID);
+    let presentation = await presentationService.findPresentationInfo(
+      presentationID
+    );
+    presentation.isPlayingInGroup = true;
+    presentationService.updatePresentation(presentation);
+
+    let list = await presentationService.findByGroupID(groupID);
+    if (list) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i]._id != presentationID) {
+          list[i].isPlayingInGroup = false;
+          presentationService.updatePresentation(list[i]);
+        }
+      }
+    }
+
+    // await presentationService.setPlayingInGroup(presentationID, groupID);
+    res.status(200).send("success");
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};

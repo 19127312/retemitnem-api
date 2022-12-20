@@ -33,6 +33,7 @@ exports.createPresentation = async (title, ownerID, groupID) => {
   newPresentation.playSlide = 0;
   newPresentation.isPrivate = true;
   newPresentation.collaborators = [];
+  newPresentation.isPlayingInGroup = false;
   await newPresentation.save();
 };
 
@@ -74,5 +75,7 @@ exports.findPresentationAndDelete = (id) => {
 };
 
 exports.findByCurrentLoggedInUser = async (userID) => {
-  return Presentation.find({ $or: [{ ownerID: userID }, {collaborators: userID}] });
+  return Presentation.find({
+    $or: [{ ownerID: userID }, { collaborators: userID }],
+  });
 };
