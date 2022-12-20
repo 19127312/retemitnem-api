@@ -1,5 +1,6 @@
 const presentationService = require("./presentationService");
 const userService = require("../user/userService");
+const { use } = require("passport");
 
 module.exports.createPresentation = async (req, res) => {
   try {
@@ -49,6 +50,31 @@ module.exports.viewListOfPresentationsByGroupID = async (req, res) => {
   }
 };
 
+module.exports.viewListOfPresentationsByCurrentLoggedInUser = async (
+  req,
+  res
+) => {
+  try {
+    const { userID } = req.params;
+    let list = await presentationService.findByCurrentLoggedInUser(userID);
+    if (list) {
+      let newList = JSON.parse(JSON.stringify(list));
+      for (let i = 0; i < newList.length; i++) {
+        const ownerInfo = await userService.findUserInfo(newList[i].ownerID);
+        newList[i] = {
+          ...newList[i],
+          ownerName: ownerInfo.fullName,
+        };
+      }
+
+      res.status(200).json(newList);
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
+
 module.exports.viewPresentationInfo = async (req, res) => {
   try {
     const { id } = req.params;
@@ -71,6 +97,30 @@ module.exports.deletePresentations = async (req, res) => {
       presentationService.findPresentationAndDelete(presentationIDs[i]);
     }
     res.status(200).send("success");
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
+
+module.exports.viewCollaborator = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let presentation = await presentationService.findPresentationInfo(id);
+    if (presentation) {
+      let newList = JSON.parse(JSON.stringify(presentation.collaborators));
+      for (let i = 0; i < newList.length; i++) {
+        const collaboratorInfo = await userService.findUserInfo(newList[i]);
+        newList[i] = {
+          id: newList[i],
+          fullName: collaboratorInfo.fullName,
+          email: collaboratorInfo.email,
+        };
+      }
+      res.status(200).json(newList);
+    } else {
+      res.status(409).json({ errorMessage: "Collaborators not found" });
+    }
   } catch (e) {
     console.log(e);
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });

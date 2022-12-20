@@ -324,3 +324,14 @@ module.exports.checkMemberInGroup = async (req, res) => {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
+
+module.exports.deleteGroup = async (req, res) => {
+  try {
+    const { groupID } = req.body;
+    groupService.findGroupAndDelete(groupID);
+    res.status(200).send("success");
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
