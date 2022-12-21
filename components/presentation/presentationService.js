@@ -31,9 +31,13 @@ exports.createPresentation = async (title, ownerID, groupID) => {
   newPresentation.groupID = groupID;
   newPresentation.currentSlide = 0;
   newPresentation.playSlide = 0;
-  newPresentation.isPrivate = true;
   newPresentation.collaborators = [];
   newPresentation.isPlayingInGroup = false;
+  if (groupID === "notAssigned") {
+    newPresentation.isPrivate = false;
+  } else {
+    newPresentation.isPrivate = true;
+  }
   await newPresentation.save();
 };
 
