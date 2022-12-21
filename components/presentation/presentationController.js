@@ -154,3 +154,10 @@ module.exports.setPlayingInGroup = async (req, res) => {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
+module.exports.otherPresentations = async (req, res) => {
+  const { presentationID, groupID } = req.body;
+  // let list = await presentationService.findByGroupID(groupID);
+  let presentation = await presentationService.findPresentationInfo(
+    presentationID
+  );
+};

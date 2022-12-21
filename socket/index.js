@@ -34,5 +34,19 @@ module.exports.createSocket = (server) => {
     socket.on("disconnect", function () {
       console.log("A user disconnected");
     });
+
+    socket.on("enterGroup", (data) => {
+      console.log("enter group" + data);
+      socket.join(data);
+    });
+    socket.on("playPresentation", (data) => {
+      socket.to(data._id).emit("onPlayPresentation", {
+        _id: data.presentationID,
+        name: data.name,
+      });
+    });
+    socket.on("pausePresentation", (data) => {
+      socket.to(data._id).emit("onPausePresentation");
+    });
   });
 };

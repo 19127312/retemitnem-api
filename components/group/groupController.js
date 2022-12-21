@@ -335,3 +335,14 @@ module.exports.deleteGroup = async (req, res) => {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
+
+module.exports.viewAllGroupOfOwnerPresentation = async (req, res) => {
+  try {
+    const { ownerID } = req.body;
+    let list = await groupService.findGroupInfoByOwner(ownerID);
+    res.status(200).send(list);
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
