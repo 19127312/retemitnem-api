@@ -1,5 +1,6 @@
 const presentationService = require("./presentationService");
 const userService = require("../user/userService");
+const authService = require("../auth/authService");
 const { use } = require("passport");
 
 module.exports.createPresentation = async (req, res) => {
@@ -160,4 +161,47 @@ module.exports.otherPresentations = async (req, res) => {
   let presentation = await presentationService.findPresentationInfo(
     presentationID
   );
+};
+
+module.exports.isValidCollaborator = async (req, res) => {
+  try {
+    const { email, currentUserEmail, presentationID } = req.params;
+    const collaborator = await authService.findByEmail(email);
+    const presentation = await presentationService.findPresentationInfo(
+      presentationID
+    );
+    if (collaborator) {
+      if (email === currentUserEmail) {
+        res.status(409).send("You cannot add yourself");
+      }
+      for (let i = 0; i < presentation.collaborators.length; i++) {
+        if (collaborator._id.toString() === presentation.collaborators[i]) {
+          res.status(409).send("This collaborator has already existed");
+        }
+      }
+      res.status(200).json({ collaboratorID: collaborator._id });
+    } else {
+      res.status(409).send("Collaborator not found");
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
+
+module.exports.KickOutGroupPresentations = async (req, res) => {
+  try {
+    const { presentationIDs } = req.body;
+    for (let i = 0; i < presentationIDs.length; i++) {
+      let presentation = await presentationService.findPresentationInfo(
+        presentationIDs[i]
+      );
+      presentation.groupID = "notAssigned";
+      presentationService.updatePresentation(presentation);
+    }
+    res.status(200).send("success");
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
 };
