@@ -11,4 +11,6 @@ router.post("/addmember", jwtMiddleware, groupController.addMember);
 router.post("/sendlinktoemail", jwtMiddleware, groupController.sendLinkToEmail);
 router.get("/detail/:groupID", groupController.viewGroupInfo);
 router.post("/check", groupController.checkMemberInGroup);
+router.post("/delete", groupController.deleteGroup);
+router.post("/infoOwner", groupController.viewAllGroupOfOwnerPresentation);
 module.exports = router;
