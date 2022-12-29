@@ -346,3 +346,20 @@ module.exports.viewAllGroupOfOwnerPresentation = async (req, res) => {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
+
+module.exports.checkMemberRoleInGroup = async (req, res) => {
+  try {
+    let role = "";
+    const { groupID, memberID } = req.body;
+    let group = await groupService.findGroupInfo(groupID);
+    for (let i = 0; i < group.members.length; i++) {
+      if (group.members[i].memberID === memberID) {
+        role = group.members[i].role;
+        break;
+      }
+    }
+    res.status(200).json({ role: role });
+  } catch (e) {
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};

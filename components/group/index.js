@@ -13,4 +13,5 @@ router.get("/detail/:groupID", groupController.viewGroupInfo);
 router.post("/check", groupController.checkMemberInGroup);
 router.post("/delete", groupController.deleteGroup);
 router.post("/infoOwner", groupController.viewAllGroupOfOwnerPresentation);
+router.post("/checkRole", groupController.checkMemberRoleInGroup);
 module.exports = router;
