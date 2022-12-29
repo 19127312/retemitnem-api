@@ -272,3 +272,47 @@ exports.googleLogin = async (req, res) => {
     res.status(400).json({ error: error.message ?? "Unknow Error" });
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await authService.findByEmail(email);
+    console.log(user);
+    if (!user) {
+      return res.status(400).send("Email is not exist");
+    }
+    if (!user.password) {
+      return res.status(400).send("This account is login with Google");
+    }
+    const host = req.headers.origin;
+    const msg = {
+      to: email, // Change to your recipient
+      from: "retemitnem@gmail.com", // Change to your verified sender
+      subject: "Reset Password Link",
+      text: "Hello",
+      html:
+        "<strong>Click this link to reset your password: " +
+        "\n" +
+        host +
+        "/resetpassword/" +
+        user._id +
+        "</strong>",
+    };
+    sgMail
+      .send(msg)
+      .then(() => {
+        return res.status(200).json({
+          message: "Send link successfully.",
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        return res.status(500).send({
+          msg: "Technical Issue!, Please check your Email.",
+        });
+      });
+  } catch (e) {
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};

@@ -11,4 +11,6 @@ router.post("/logout", authController.logout);
 router.post("/logout-all", authController.logoutAll);
 router.post("/google_login", authController.googleLogin);
 router.get("/confirmation/:email/:token", authController.confirmation);
+router.post("/forgot_password", authController.forgotPassword);
+
 module.exports = router;

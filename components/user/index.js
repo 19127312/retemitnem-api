@@ -7,4 +7,5 @@ router.get("/profile", jwtMiddleware, userController.getProfile);
 router.post("/changename", jwtMiddleware, userController.changeName);
 router.post("/changepassword", jwtMiddleware, userController.changePassword);
 router.post("/checkType", jwtMiddleware, userController.checkType);
+router.post("/resetPassword", userController.resetPassword);
 module.exports = router;

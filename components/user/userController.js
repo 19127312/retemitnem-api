@@ -64,3 +64,24 @@ module.exports.checkType = async (req, res) => {
     res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
   }
 };
+
+module.exports.resetPassword = async (req, res) => {
+  const { userID, newPassword } = req.body;
+  const userInfo = await userService.findUserInfo(userID);
+  console.log(newPassword);
+  try {
+    // update password
+    let newUserInfo = JSON.parse(JSON.stringify(userInfo));
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    newUserInfo.password = passwordHash;
+    userService.updateUser(newUserInfo);
+    res.status(200).json({
+      _id: newUserInfo._id,
+      fullName: newUserInfo.fullName,
+      email: newUserInfo.email,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e.message ?? "Unknown error" });
+  }
+};
