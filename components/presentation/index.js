@@ -18,5 +18,10 @@ router.post("/delete", presentationController.deletePresentations);
 router.get("/collaborator/:id", presentationController.viewCollaborator);
 router.post("/setPlayingInGroup", presentationController.setPlayingInGroup);
 router.post("/otherPresentations", presentationController.otherPresentations);
+router.get(
+  "/isValidCollaborator/:email/:currentUserEmail/:presentationID",
+  presentationController.isValidCollaborator
+);
+router.post("/kick", presentationController.KickOutGroupPresentations);
 
 module.exports = router;
